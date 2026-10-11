@@ -1,23 +1,27 @@
-import { ArrayMaxSize, IsAlpha, IsArray, IsNotEmpty, IsNumber, IsPositive, MaxLength, Min } from "class-validator";
+import { Type } from 'class-transformer';
+import { ArrayMaxSize, ArrayMinSize, IsArray, IsInt, IsNotEmpty, IsNumber, IsString, Min, ValidateNested } from 'class-validator';
 
-class Item {
-    @IsNotEmpty()
-    name: string
+export class ItemDto {
+  @IsNotEmpty()
+  @IsString()
+  nama: string;
 
-    @IsNumber()
-    @Min(0, {message: 'Price must be more than 0...'})
-    harga: number
+  @IsNotEmpty()
+  @IsNumber()
+  @Min(1)
+  harga: number;
 
-    @IsNumber()
-    @Min(0, {message: 'Quantity must be more than 0....'})
-    qty: number
+  @IsNotEmpty()
+  @IsInt()
+  @Min(1)
+  qty: number;
 }
 
-export class CreateKasirDTO {
-    @IsArray()
-    @IsNotEmpty({each: true})
-    @ArrayMaxSize(10, {message: 'Maximum of 10 items allowed...'})
-    @IsPositive()
-    @Min(0)
-    items: Item[];
+export class KasirTokoDto {
+  @IsArray()
+  @ArrayMinSize(1)
+  @ArrayMaxSize(10)
+  @ValidateNested({ each: true })
+  @Type(() => ItemDto)
+  items: ItemDto[];
 }
